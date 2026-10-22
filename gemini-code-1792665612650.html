@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="km">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ប្រព័ន្ធគ្រប់គ្រងស្តុក និងរបាយការណ៍ (Inventory Management System)</title>
+    <!-- Tailwind CSS for modern UI -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font -->
+    <link href="https://fonts.googleapis.com/css2?family=Content:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Content', sans-serif; background-color: #f3f4f6; }
+    </style>
+</head>
+<body class="text-gray-800">
+
+    <div class="flex h-screen overflow-hidden">
+        <!-- Sidebar -->
+        <div class="w-64 bg-blue-900 text-white flex flex-col">
+            <div class="p-5 text-xl font-bold border-b border-blue-800">📦 Inventory System</div>
+            <nav class="flex-1 p-4 space-y-2">
+                <a href="#" onclick="switchTab('dashboard')" id="nav-dashboard" class="block px-4 py-2.5 rounded bg-blue-800 text-white font-semibold">📊 Dashboard</a>
+                <a href="#" onclick="switchTab('stock')" id="nav-stock" class="block px-4 py-2.5 rounded hover:bg-blue-800 text-blue-100">🔄 Stock In / Out</a>
+                <a href="#" onclick="switchTab('reports')" id="nav-reports" class="block px-4 py-2.5 rounded hover:bg-blue-800 text-blue-100">📑 Reports (5 Categories)</a>
+            </nav>
+            <div class="p-4 border-t border-blue-800 text-xs text-blue-300">
+                Cloud Ready & Team Review v1.0
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="flex-1 flex flex-col overflow-y-auto">
+            <!-- Top Header -->
+            <header class="bg-white shadow px-6 py-4 flex justify-between items-center">
+                <h1 id="page-title" class="text-2xl font-bold text-gray-700">Dashboard</h1>
+                <div class="flex items-center space-x-3">
+                    <span class="bg-green-100 text-green-800 text-xs font-semibold px-2.5 py-0.5 rounded">Online Mode</span>
+                    <span class="text-sm font-medium text-gray-600">👤 Team Reviewer</span>
+                </div>
+            </header>
+
+            <!-- Content Body -->
+            <main class="p-6">
+                
+                <!-- TAB 1: DASHBOARD -->
+                <div id="tab-dashboard" class="space-y-6">
+                    <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+                        <div class="bg-white p-5 rounded-lg shadow border-l-4 border-blue-500">
+                            <p class="text-sm text-gray-500">សរុបមុខទំនិញ (Total Items)</p>
+                            <h3 class="text-2xl font-bold mt-1" id="stat-total">1,240</h3>
+                        </div>
+                        <div class="bg-white p-5 rounded-lg shadow border-l-4 border-green-500">
+                            <p class="text-sm text-gray-500">ស្តុកចូលសប្តាហ៍នេះ (Stock In)</p>
+                            <h3 class="text-2xl font-bold mt-1 text-green-600">+350</h3>
+                        </div>
+                        <div class="bg-white p-5 rounded-lg shadow border-l-4 border-orange-500">
+                            <p class="text-sm text-gray-500">ស្តុកចេញសប្តាហ៍នេះ (Stock Out)</p>
+                            <h3 class="text-2xl font-bold mt-1 text-orange-600">-180</h3>
+                        </div>
+                        <div class="bg-white p-5 rounded-lg shadow border-l-4 border-red-500">
+                            <p class="text-sm text-gray-500">ស្តុកជិតអស់ (Low Stock Alert)</p>
+                            <h3 class="text-2xl font-bold mt-1 text-red-600">3</h3>
+                        </div>
+                    </div>
+
+                    <div class="bg-white p-6 rounded-lg shadow">
+                        <h3 class="text-lg font-bold mb-4">សកម្មភាពស្តុកចុងក្រោយ (Recent Activities)</h3>
+                        <div class="overflow-x-auto">
+                            <table class="w-full text-left border-collapse text-sm">
+                                <thead>
+                                    <tr class="bg-gray-100 border-b">
+                                        <th class="p-3">កាលបរិច្ឆេទ</th>
+                                        <th class="p-3">ប្រភេទ</th>
+                                        <th class="p-3">ឈ្មោះទំនិញ / FOC / CPE</th>
+                                        <th class="p-3">ចំនួន</th>
+                                        <th class="p-3">អ្នកធ្វើប្រតិបត្តិការ</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="recent-activities">
+                                    <tr class="border-b"><td class="p-3">2026-10-22</td><td class="p-3"><span class="bg-green-100 text-green-700 px-2 py-1 rounded text-xs">Stock In</span></td><td class="p-3">FOC FTTH 2Core</td><td class="p-3">1,000 m</td><td class="p-3">Dara</td></tr>
+                                    <tr class="border-b"><td class="p-3">2026-10-21</td><td class="p-3"><span class="bg-orange-100 text-orange-700 px-2 py-1 rounded text-xs">Stock Out</span></td><td class="p-3">CPE Router Wi-Fi 6</td><td class="p-3">25 pcs</td><td class="p-3">Sokha</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- TAB 2: STOCK IN / OUT -->
+                <div id="tab-stock" class="hidden space-y-6">
+                    <div class="bg-white p-6 rounded-lg shadow max-w-2xl">
+                        <h3 class="text-lg font-bold mb-4">កត់ត្រាការចូល/ចេញស្តុក (Add Stock Transaction)</h3>
+                        <form onsubmit="handleStockSubmit(event)" class="space-y-4">
+                            <div>
+                                <label class="block text-sm font-medium mb-1">ประเภทប្រតិបត្តិការ (Transaction Type)</label>
+                                <select id="tx-type" class="w-full border rounded p-2">
+                                    <option value="Stock In">Stock In (នាំចូល)</option>
+                                    <option value="Stock Out">Stock Out (ដកប្រើប្រាស់/លក់)</option>
+                                    <option value="Purchase">Purchase (បញ្ជាទិញ)</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium mb-1">ក្រុមប្រភេទ (Category)</label>
+                                <select id="tx-category" class="w-full border rounded p-2">
+                                    <option value="FOC FTTH">FOC FTTH</option>
+                                    <option value="Accessories FOC">Accessories FOC</option>
+                                    <option value="CPE">CPE</option>
+                                    <option value="Stock Level">Stock Level</option>
+                                    <option value="TOOL">TOOL</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium mb-1">ឈ្មោះទំនិញ / សម្ភារៈ (Item Name)</label>
+                                <input type="text" id="tx-item" required class="w-full border rounded p-2" placeholder="ឧ. FOC Drop Cable 2Core / CPE Router">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium mb-1">ចំនួន (Quantity & Unit)</label>
+                                <input type="text" id="tx-qty" required class="w-full border rounded p-2" placeholder="ឧ. 500 Meters ឬ 10 Pcs">
+                            </div>
+                            <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 font-medium">រក្សាទុកទិន្នន័យ (Save)</button>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- TAB 3: REPORTS (5 CATEGORIES) -->
+                <div id="tab-reports" class="hidden space-y-6">
+                    <div class="bg-white p-6 rounded-lg shadow">
+                        <div class="flex flex-col md:flex-row justify-between items-center mb-6 gap-4">
+                            <h3 class="text-lg font-bold">របាយការណ៍តាមផ្នែក (Reports by 5 Categories)</h3>
+                            <div class="flex space-x-2">
+                                <select id="report-cat-filter" onchange="filterReports()" class="border rounded p-2 text-sm">
+                                    <option value="All">ទាំងអស់ (All Categories)</option>
+                                    <option value="FOC FTTH">1. FOC FTTH</option>
+                                    <option value="Accessories FOC">2. Accessories FOC</option>
+                                    <option value="CPE">3. CPE</option>
+                                    <option value="Stock Level">4. Stock Level</option>
+                                    <option value="TOOL">5. TOOL</option>
+                                </select>
+                                <select id="report-period" class="border rounded p-2 text-sm">
+                                    <option value="Weekly">Weekly (ប្រចាំសប្តាហ៍)</option>
+                                    <option value="Monthly" selected>Monthly (ប្រចាំខែ)</option>
+                                    <option value="Quarterly">Quarterly (ប្រចាំត្រីមាស)</option>
+                                    <option value="Yearly">Yearly (ប្រចាំឆ្នាំ)</option>
+                                </select>
+                                <button onclick="alert('Exporting Report to Excel/CSV...')" class="bg-green-600 text-white px-4 py-2 rounded text-sm font-medium hover:bg-green-700">📥 Export Report</button>
+                            </div>
+                        </div>
+
+                        <div class="overflow-x-auto">
+                            <table class="w-full text-left border-collapse text-sm">
+                                <thead>
+                                    <tr class="bg-gray-100 border-b">
+                                        <th class="p-3">Code / Item</th>
+                                        <th class="p-3">Category</th>
+                                        <th class="p-3">Opening Stock</th>
+                                        <th class="p-3">Stock In</th>
+                                        <th class="p-3">Stock Out</th>
+                                        <th class="p-3">Closing Stock</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="report-table-body">
+                                    <tr class="border-b"><td class="p-3 font-semibold">FOC-FTTH-01</td><td class="p-3"><span class="bg-blue-100 text-blue-700 px-2 py-0.5 rounded text-xs">FOC FTTH</span></td><td class="p-3">2,000 m</td><td class="p-3 text-green-600">+1,000 m</td><td class="p-3 text-orange-600">-500 m</td><td class="p-3 font-bold">2,500 m</td></tr>
+                                    <tr class="border-b"><td class="p-3 font-semibold">ACC-FOC-02</td><td class="p-3"><span class="bg-purple-100 text-purple-700 px-2 py-0.5 rounded text-xs">Accessories FOC</span></td><td class="p-3">50 pcs</td><td class="p-3 text-green-600">+20 pcs</td><td class="p-3 text-orange-600">-10 pcs</td><td class="p-3 font-bold">60 pcs</td></tr>
+                                    <tr class="border-b"><td class="p-3 font-semibold">CPE-RT-03</td><td class="p-3"><span class="bg-yellow-100 text-yellow-800 px-2 py-0.5 rounded text-xs">CPE</span></td><td class="p-3">120 units</td><td class="p-3 text-green-600">+50 units</td><td class="p-3 text-orange-600">-25 units</td><td class="p-3 font-bold">145 units</td></tr>
+                                    <tr class="border-b"><td class="p-3 font-semibold">TOOL-SPL-04</td><td class="p-3"><span class="bg-red-100 text-red-700 px-2 py-0.5 rounded text-xs">TOOL</span></td><td class="p-3">5 sets</td><td class="p-3 text-green-600">+0 sets</td><td class="p-3 text-orange-600">-1 set</td><td class="p-3 font-bold">4 sets</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+            </main>
+        </div>
+    </div>
+
+    <script>
+        function switchTab(tabId) {
+            document.getElementById('tab-dashboard').classList.add('hidden');
+            document.getElementById('tab-stock').classList.add('hidden');
+            document.getElementById('tab-reports').classList.add('hidden');
+            
+            document.getElementById('nav-dashboard').className = "block px-4 py-2.5 rounded hover:bg-blue-800 text-blue-100";
+            document.getElementById('nav-stock').className = "block px-4 py-2.5 rounded hover:bg-blue-800 text-blue-100";
+            document.getElementById('nav-reports').className = "block px-4 py-2.5 rounded hover:bg-blue-800 text-blue-100";
+
+            document.getElementById('tab-' + tabId).classList.remove('hidden');
+            document.getElementById('nav-' + tabId).className = "block px-4 py-2.5 rounded bg-blue-800 text-white font-semibold";
+            
+            const titles = { 'dashboard': 'Dashboard', 'stock': 'Stock In / Out Management', 'reports': 'Reports (FOC FTTH, Accessories, CPE, Stock Level, TOOL)' };
+            document.getElementById('page-title').innerText = titles[tabId];
+        }
+
+        function handleStockSubmit(event) {
+            event.preventDefault();
+            const type = document.getElementById('tx-type').value;
+            const cat = document.getElementById('tx-category').value;
+            const item = document.getElementById('tx-item').value;
+            const qty = document.getElementById('tx-qty').value;
+            
+            alert(`បានរក្សាទុកដោយជោគជ័យ!\n- ប្រភេទ: ${type}\n- ក្រុម: ${cat}\n- ទំនិញ: ${item} (${qty})`);
+            event.target.reset();
+            switchTab('dashboard');
+        }
+
+        function filterReports() {
+            // Placeholder for filtering logic when users update categories further
+            const val = document.getElementById('report-cat-filter').value;
+            console.log("Filtering report for: " + val);
+        }
+    </script>
+</body>
+</html>
